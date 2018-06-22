@@ -190,57 +190,62 @@ class PlgSystemKickGdpr extends JPlugin
 			$js = array();
 			$js[] = '// Start Cookie Alert';
 			$js[] = 'window.addEventListener("load", function(){';
-			$js[] = 'window.cookieconsent.initialise({';
-			$js[] = '  "palette": {';
-			$js[] = '    "popup": {';
-			$js[] = '      "background": "' . $banner_color . '",';
-			$js[] = '      "text": "' . $banner_text . '"';
-			$js[] = '    },';
-			$js[] = '    "button": {';
-			$js[] = '      "background": "' . $button_color . '",';
-			$js[] = '      "text": "' . $button_text . '",';
+            $js[] = '   window.cookieconsent.getCountryCode({location:true}, function(getCountryCodeResult){';
+            $js[] = '       window.cookieconsent.initialise({';
+			$js[] = '           "palette": {';
+			$js[] = '               "popup": {';
+			$js[] = '                   "background": "' . $banner_color . '",';
+			$js[] = '                   "text": "' . $banner_text . '"';
+			$js[] = '               },';
+			$js[] = '               "button": {';
+			$js[] = '                   "background": "' . $button_color . '",';
+			$js[] = '                   "text": "' . $button_text . '",';
 
 			if (isset($border))
 			{
-				$js[] = '      "border": "' . $border . '"';
+				$js[] = '               "border": "' . $border . '"';
 			}
 
-			$js[] = '    }';
-			$js[] = '  },';
-			$js[] = '  "theme": "' . $theme . '",';
-			$js[] = '  "position": "' . $position[0] . '",';
+			$js[] = '               }';
+			$js[] = '           },';
+			$js[] = '           "theme": "' . $theme . '",';
+			$js[] = '           "position": "' . $position[0] . '",';
 
 			if (isset($position[1]))
 			{
-				$js[] = '  "static": true,';
+				$js[] = '       "static": true,';
 			}
 
-			$js[] = '  "type": "' . $type . '",';
-			$js[] = '  "revokeBtn": "<div class=\"cc-revoke {{classes}}\">' . JText::_('PLG_SYSTEM_KICKGDPR_COOKIE_POLICY') . '</div>",';
-			$js[] = '  "content": {';
-			$js[] = '    "message": "' . $message . '",';
-			$js[] = '    "dismiss": "' . JText::_($dismiss) . '",';
-			$js[] = '    "allow": "' . JText::_($allow) . '",';
-			$js[] = '    "deny": "' . JText::_($deny) . '",';
-			$js[] = '    "link": "' . JText::_($link) . '",';
-			$js[] = '    "href": "' . JText::_($href) . '",';
-			$js[] = '  },';
-			$js[] = '  "cookie": {';
-			$js[] = '    "expiryDays": ' . (int) $expiryDays;
-			$js[] = '  },';
-			$js[] = '  "elements": {';
-			$js[] = '    "messagelink": \'<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="' . JText::_($href) . '" target="' . $target . '">{{link}}</a></span>\'';
-			$js[] = '  },';
-			$js[] = '  onInitialise: function (status) {';
-			$js[] = '    handleCookies(status);';
-			$js[] = '  },';
-			$js[] = '  onStatusChange: function (status, chosenBefore) {';
-			$js[] = '    handleCookies(status);';
-			$js[] = '  },';
-			$js[] = '  onRevokeChoice: function () {';
-			$js[] = '    handleCookies(status);';
-			$js[] = '  }';
-			$js[] = '})});';
+			$js[] = '           "type": "' . $type . '",';
+			$js[] = '           "revokeBtn": "<div class=\"cc-revoke {{classes}}\">' . JText::_('PLG_SYSTEM_KICKGDPR_COOKIE_POLICY') . '</div>",';
+			$js[] = '           "content": {';
+			$js[] = '               "message": "' . $message . '",';
+			$js[] = '               "dismiss": "' . JText::_($dismiss) . '",';
+			$js[] = '               "allow": "' . JText::_($allow) . '",';
+			$js[] = '               "deny": "' . JText::_($deny) . '",';
+			$js[] = '               "link": "' . JText::_($link) . '",';
+			$js[] = '               "href": "' . JText::_($href) . '",';
+			$js[] = '           },';
+			$js[] = '           "cookie": {';
+			$js[] = '               "expiryDays": ' . (int) $expiryDays;
+			$js[] = '           },';
+            $js[] = '           "law": {';
+            $js[] = '               "countryCode": getCountryCodeResult.code,';
+            $js[] = '               "regionalLaw": false';
+            $js[] = '           },';
+			$js[] = '           "elements": {';
+			$js[] = '               "messagelink": \'<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="' . JText::_($href) . '" target="' . $target . '">{{link}}</a></span>\'';
+			$js[] = '           },';
+			$js[] = '           onInitialise: function (status) {';
+			$js[] = '               handleCookies(status);';
+			$js[] = '           },';
+			$js[] = '           onStatusChange: function (status, chosenBefore) {';
+			$js[] = '               if(status === "dismiss"){document.cookie = "cookieconsent_status=dismiss; expires= "+ new Date(new Date().getTime() + 1000*60*60*24*10) + "; path=/;"}handleCookies(status);';
+			$js[] = '           },';
+			$js[] = '           onRevokeChoice: function () {';
+			$js[] = '               handleCookies(status);';
+			$js[] = '           }';
+			$js[] = '})})});';
 
 			$js[] = "// End Cookie Alert";
 			$js[] = "function handleCookies(status){";
